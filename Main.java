@@ -1,3 +1,7 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -99,12 +103,83 @@ public class Main {
     // =========================
     // OPCIÓN 4
     // =========================
-    public static void mostrarClientesConCompras() {
-        System.out.println("Funcionalidad en construcción (Rama compañero 4)");
-        // Leer clientes.csv
-        // Leer pedidos.csv
-        // Ver cuáles clientes aparecen en pedidos
-        // Ordenar alfabéticamente
-        // Mostrar resultado
+   public static void mostrarClientesConCompras() {
+
+    try {
+
+        BufferedReader brClientes = new BufferedReader(new FileReader(CLIENTES_FILE));
+        BufferedReader brPedidos = new BufferedReader(new FileReader(PEDIDOS_FILE));
+
+        ArrayList<String[]> clientes = new ArrayList<>();
+        ArrayList<Integer> clientesConCompra = new ArrayList<>();
+        ArrayList<String> nombres = new ArrayList<>();
+
+        String linea;
+
+        
+        brClientes.readLine();
+        brPedidos.readLine();
+
+        
+        while ((linea = brClientes.readLine()) != null) {
+            String[] datos = linea.split(",");
+            clientes.add(datos);
+        }
+
+        
+        while ((linea = brPedidos.readLine()) != null) {
+            String[] datos = linea.split(",");
+            int idCliente = Integer.parseInt(datos[1]);
+
+            boolean repetido = false;
+
+            for (int i = 0; i < clientesConCompra.size(); i++) {
+                if (clientesConCompra.get(i) == idCliente) {
+                    repetido = true;
+                }
+            }
+
+            if (!repetido) {
+                clientesConCompra.add(idCliente);
+            }
+        }
+
+        
+        for (int i = 0; i < clientes.size(); i++) {
+
+            int id = Integer.parseInt(clientes.get(i)[0]);
+
+            for (int j = 0; j < clientesConCompra.size(); j++) {
+                if (id == clientesConCompra.get(j)) {
+                    nombres.add(clientes.get(i)[1]);
+                }
+            }
+        }
+
+        
+        for (int i = 0; i < nombres.size() - 1; i++) {
+            for (int j = 0; j < nombres.size() - i - 1; j++) {
+
+                if (nombres.get(j).compareTo(nombres.get(j + 1)) > 0) {
+
+                    String aux = nombres.get(j);
+                    nombres.set(j, nombres.get(j + 1));
+                    nombres.set(j + 1, aux);
+                }
+            }
+        }
+
+        System.out.println("\nClientes que han realizado compras:");
+
+        for (int i = 0; i < nombres.size(); i++) {
+            System.out.println(nombres.get(i));
+        }
+
+        brClientes.close();
+        brPedidos.close();
+
+    } catch (IOException e) {
+        System.out.println("Error al leer los archivos.");
     }
 }
+    }
